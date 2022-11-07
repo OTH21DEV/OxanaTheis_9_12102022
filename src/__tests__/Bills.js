@@ -32,7 +32,9 @@ describe("Given I am connected as an employee", () => {
       document.body.innerHTML = BillsUI({ data: bills })
       const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
       const antiChrono = (a, b) => ((a < b) ? 1 : -1)
-      const datesSorted = [...dates].sort(antiChrono)
+    //  const datesSorted = [...dates].sort(antiChrono) Bug correction Bills  : delete  .sort()
+      const datesSorted = [...dates]
+      console.log(datesSorted)
       expect(dates).toEqual(datesSorted)
     })
   })
