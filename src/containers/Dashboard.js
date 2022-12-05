@@ -14,7 +14,7 @@ export const filteredBills = (data, status) => {
         if (typeof jest !== "undefined") {
           selectCondition = bill.status === status;
         } else {
-        /* istanbul ignore next */
+          /* istanbul ignore next */
           // in prod environment
           const userEmail = JSON.parse(localStorage.getItem("user")).email;
           selectCondition = bill.status === status && ![...USERS_TEST, userEmail].includes(bill.email);
@@ -81,19 +81,20 @@ export default class {
     if (typeof $("#modaleFileAdmin1").modal === "function") $("#modaleFileAdmin1").modal("show");
   };
 
-  //correction :  bills display when click on them (the view were blocked ) -
-  //change the condition (this.counter % 2 === 0) by included lines 92-95
+  //correction line 97: admin error while view the details of bills - cancel counter ++
+
   handleEditTicket(e, bill, bills) {
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0;
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id;
     if (this.counter % 2 === 0) {
       bills.forEach((b) => {
-      $(`#open-bill${b.id}`).css({ background: "#0D5AE5" });
+        $(`#open-bill${b.id}`).css({ background: "#0D5AE5" });
+      });
       $(`#open-bill${bill.id}`).css({ background: "#2A2B35" });
+
       $(".dashboard-right-container div").html(DashboardFormUI(bill));
       $(".vertical-navbar").css({ height: "150vh" });
-      this.counter++;
-    });
+      //  this.counter++;
     } else {
       $(`#open-bill${bill.id}`).css({ background: "#0D5AE5" });
 
@@ -132,6 +133,8 @@ export default class {
     if (this.counter === undefined || this.index !== index) this.counter = 0;
     if (this.index === undefined || this.index !== index) this.index = index;
     if (this.counter % 2 === 0) {
+      console.log(this.counter);
+      console.log(this.index);
       $(`#arrow-icon${this.index}`).css({ transform: "rotate(0deg)" });
       $(`#status-bills-container${this.index}`).html(cards(filteredBills(bills, getStatus(this.index))));
       this.counter++;
@@ -143,6 +146,7 @@ export default class {
 
     bills.forEach((bill) => {
       $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills));
+      console.log(bill.id);
     });
 
     return bills;
@@ -174,6 +178,7 @@ export default class {
     if (this.store) {
       return this.store
         .bills()
+
         .update({ data: JSON.stringify(bill), selector: bill.id })
         .then((bill) => bill)
         .catch(console.log);
