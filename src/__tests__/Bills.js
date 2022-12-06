@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { screen, waitFor } from "@testing-library/dom";
+import { fireEvent,screen, waitFor } from "@testing-library/dom";
 import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
 import { ROUTES_PATH } from "../constants/routes.js";
@@ -40,6 +40,7 @@ describe("Given I am connected as an employee", () => {
   });
 });
 
+//add test
 describe('Given I am connected as an employee and I am on Bills page ', () => {
   describe('When I click on the icon eye', () => {
     test('A modal should open', () => {
@@ -68,3 +69,38 @@ describe('Given I am connected as an employee and I am on Bills page ', () => {
     })
   })
 })
+
+describe("Given I am connected as an employee and I am on Bills page", () => {
+  describe("When I click on the New Bill button", () => {
+    test("Then, it should render NewBill page", () => {
+
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
+      });
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+        })
+      );
+      const store = null;
+      const html = BillsUI({ data: [] });
+      document.body.innerHTML = html;
+
+      const bills = new Bills({
+        document,
+        onNavigate,
+        store,
+        localStorage: window.localStorage,
+      });
+       const handleClickNewBill = jest.fn(bills.handleClickNewBill);
+       const billBtn = screen.getByTestId("btn-new-bill");
+      billBtn.addEventListener("click", handleClickNewBill);
+      fireEvent.click(billBtn);
+      expect(screen.getAllByText("Envoyer une note de frais")).toBeTruthy();
+    });
+  });
+});
