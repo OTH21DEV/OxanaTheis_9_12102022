@@ -7,7 +7,7 @@ import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
 import { ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
-
+import Bills from '../containers/Bills.js'
 import router from "../app/Router.js";
 
 describe("Given I am connected as an employee", () => {
@@ -39,3 +39,32 @@ describe("Given I am connected as an employee", () => {
     });
   });
 });
+
+describe('Given I am connected as an employee and I am on Bills page ', () => {
+  describe('When I click on the icon eye', () => {
+    test('A modal should open', () => {
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee'
+      }))
+      document.body.innerHTML = BillsUI({ data: bills });
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname })
+      }
+      const store = null
+
+      const myBills = new Bills({
+        document, onNavigate, store, localStorage: window.localStorage
+      })
+
+      const handleClickIconEye = jest.fn(myBills.handleClickIconEye)
+      const eye = screen.getByTestId('icon-eye-d')
+      eye.addEventListener('click', handleClickIconEye)
+      userEvent.click(eye)
+      expect(handleClickIconEye).toHaveBeenCalled()
+
+      const modale = screen.getByTestId('modaleFile')
+      expect(modale).toBeTruthy()
+    })
+  })
+})
