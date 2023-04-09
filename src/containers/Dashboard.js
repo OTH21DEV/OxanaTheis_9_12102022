@@ -84,6 +84,7 @@ export default class {
   //correction line 97: admin error while view the details of bills - cancel counter ++
 
   handleEditTicket(e, bill, bills) {
+  
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0;
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id;
     if (this.counter % 2 === 0) {
@@ -94,7 +95,7 @@ export default class {
 
       $(".dashboard-right-container div").html(DashboardFormUI(bill));
       $(".vertical-navbar").css({ height: "150vh" });
-      //  this.counter++;
+      this.counter++;
     } else {
       $(`#open-bill${bill.id}`).css({ background: "#0D5AE5" });
 
@@ -143,7 +144,8 @@ export default class {
     }
 
     bills.forEach((bill) => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills));
+        // need to cancel l'event click before another click
+      $(`#open-bill${bill.id}`).unbind('click').click((e) => this.handleEditTicket(e, bill, bills));
       console.log(bill.id);
     });
 

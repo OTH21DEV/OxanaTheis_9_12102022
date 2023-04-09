@@ -13,6 +13,7 @@ export default class NewBill {
     this.fileUrl = null;
     this.fileName = null;
     this.billId = null;
+    // this.validFile;
     new Logout({ document, localStorage, onNavigate });
   }
 
@@ -28,7 +29,7 @@ export default class NewBill {
     // formData.append("file", file);
     // formData.append("email", email);
 
-    const fileExtension = fileName.split(".")[1];
+    const fileExtension = fileName.split(".").pop();
 
     //     this.store
     //       .bills()
@@ -60,23 +61,18 @@ export default class NewBill {
           },
         })
         .then(({ fileUrl, key }) => {
-          this.validFile = true;
           this.billId = key;
           this.fileUrl = fileUrl;
           this.fileName = fileName;
         })
         .catch((error) => {
-          this.validFile = false;
           console.error(error);
-          return this.validFile;
         });
     }
     // clean the input if extension is not 'jpg|jpeg|png'
     else {
       e.target.value = "";
-      this.validFile = false;
     }
-    return this.validFile;
   };
   handleSubmit = (e) => {
     e.preventDefault();
@@ -100,6 +96,8 @@ export default class NewBill {
   };
 
   // not need to cover this function by tests
+
+  /* istanbul ignore next */ 
   updateBill = (bill) => {
     if (this.store) {
       this.store
