@@ -146,7 +146,7 @@ export default class {
     bills.forEach((bill) => {
         // need to cancel l'event click before another click
       $(`#open-bill${bill.id}`).unbind('click').click((e) => this.handleEditTicket(e, bill, bills));
-      console.log(bill.id);
+     
     });
 
     return bills;
