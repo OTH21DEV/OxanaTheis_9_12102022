@@ -86,6 +86,7 @@ describe("Given I am connected as an employee on NewBill Page", () => {
       userEvent.upload(input, file)
 
       expect(handleChangeFile).toHaveBeenCalled()
+      //toStrictEqual - test that objects have the same structure and type
       expect(input.files[0]).toStrictEqual(file)
       expect(input.files[0].name).toBe('image.png')
       expect(input.files[0].name).toMatch(/(\.jpg|\.jpeg|\.png)$/i)

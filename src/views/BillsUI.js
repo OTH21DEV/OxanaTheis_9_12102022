@@ -19,14 +19,19 @@ const row = (bill) => {
     `;
 };
 
+// const rows = (data) => {
+//   if (data && data.length) {
+//     //Bug correction date of Bills
+//     //add const sortedDate and in the return map of this array instead of data array
+//     const sortedDate = data.sort((a, b) => (new Date(a.date) < new Date.sort(b.date) ? 1 : -1)); // Order by date
+//     return data && data.length ? sortedDate.map((bill) => row(bill)).join("") : "";
+//   }
+// };
+
+
 const rows = (data) => {
-  if (data && data.length) {
-    //Bug correction date of Bills
-    //add const sortedDate and in the return map of this array instead of data array
-    const sortedDate = data.sort((a, b) => (new Date(a.date) < new Date(b.date) ? 1 : -1)); // Order by date
-    return data && data.length ? sortedDate.map((bill) => row(bill)).join("") : "";
-  }
-};
+  return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+}
 
 export default ({ data: bills, loading, error }) => {
   const modal = () => `

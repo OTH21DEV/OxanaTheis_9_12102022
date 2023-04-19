@@ -87,6 +87,7 @@ describe("Given I am connected as an employee", () => {
       //get the icon from VerticalLayout.js
       const windowIcon = screen.getByTestId("icon-window");
       //expect having the class active-icon
+      //correction here
       expect(windowIcon.classList.contains("active-icon")).toBe(true);
     });
     test("Then bills should be ordered from earliest to latest", () => {
