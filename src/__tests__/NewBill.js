@@ -10,7 +10,6 @@ import mockStore from "../__mocks__/store";
 import router from "../app/Router.js";
 import userEvent from "@testing-library/user-event";
 
-import BillsUI from "../views/BillsUI.js";
 jest.mock("../app/store", () => mockStore);
 
 describe("Given I am connected as an employee on NewBill Page", () => {
@@ -60,77 +59,73 @@ describe("Given I am connected as an employee on NewBill Page", () => {
       fireEvent.change(file, { target: { files: [new File(["myProof.png"], "myProof.png", { type: "image/png" })] } });
       expect(handleChangeFile).toHaveBeenCalled();
       expect(file.files.length).toBe(1);
-
-      //  expect(file.files[0].value).toMatch(/(\.jpg|\.jpeg|\.png)$/i)
       expect(file.files[0].name).toBe("myProof.png");
     });
   });
 
-
-
   describe("When I am on NewBill Page and I upload file with good extension (jpg|jpeg|png)", () => {
     test("Then my input file should be added", async () => {
-      document.body.innerHTML = NewBillUI()
-         const onNavigate = (pathname) => {
-            document.body.innerHTML = ROUTES({ pathname });
-         }
-      const newBill = new NewBill({
-        document, onNavigate, store: mockStore, localStorage: window.localStorage
-      })
-
-      // Edit Input File
-      const input = screen.getByTestId('file')
-      const file = new File(['img'], 'image.png', {type:'image/png'})
-      const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e))
-      input.addEventListener('change', handleChangeFile)
-      userEvent.upload(input, file)
-
-      expect(handleChangeFile).toHaveBeenCalled()
-      //toStrictEqual - test that objects have the same structure and type
-      expect(input.files[0]).toStrictEqual(file)
-      expect(input.files[0].name).toBe('image.png')
-      expect(input.files[0].name).toMatch(/(\.jpg|\.jpeg|\.png)$/i)
-
-    })
-    test('Then bill file should be created', async () => {
-      // we have to use mockStore to simulate add of bill image
-      const addedBill = mockStore.bills().create()
-      const newImg = await addedBill.then((value) => {
-        return value
-      })
-
-      expect(newImg.fileUrl).toEqual('https://localhost:3456/images/test.jpg')
-      expect(newImg.key).toEqual('1234')
-    })
-  })
-  describe("When I am on NewBill Page and I upload file with incorect format", () => {
-    test("Then my input file should be invalid", async () => {
-      document.body.innerHTML = NewBillUI()
+      document.body.innerHTML = NewBillUI();
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });
-     }
+      };
       const newBill = new NewBill({
-        document, onNavigate, store: mockStore, localStorage: window.localStorage
-      })
+        document,
+        onNavigate,
+        store: mockStore,
+        localStorage: window.localStorage,
+      });
 
       // Edit Input File
-      const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e))
-      const input = screen.getByTestId('file')
-      const file = new File(['video'], 'bill.mp4', {type:'video/mp4'})
-      input.addEventListener('change', handleChangeFile)
-      userEvent.upload(input, file)
+      const input = screen.getByTestId("file");
+      const file = new File(["img"], "image.png", { type: "image/png" });
+      const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e));
+      input.addEventListener("change", handleChangeFile);
+      userEvent.upload(input, file);
 
-      expect(handleChangeFile).toHaveBeenCalled()
-      expect(input.files[0]).toStrictEqual(file)
-       expect(input.files[0].name).not.toMatch(/(\.jpg|\.jpeg|\.png)$/i)
-    //  expect(input.files[0].name).not.toBe("bill.jpeg")
-    //  expect(input.files[0].name).not.toBe("bill.jpg")
-    //  expect(input.files[0].name).not.toBe("bill.png")
-     expect(input.value).toBe("")
-     })
-  })
+      expect(handleChangeFile).toHaveBeenCalled();
+      //toStrictEqual - test that objects have the same structure and type
+      expect(input.files[0]).toStrictEqual(file);
+      expect(input.files[0].name).toBe("image.png");
+      expect(input.files[0].name).toMatch(/(\.jpg|\.jpeg|\.png)$/i);
+    });
+    test("Then bill file should be created", async () => {
+      // we have to use mockStore to simulate add of bill image
+      const addedBill = mockStore.bills().create();
+      const newImg = await addedBill.then((value) => {
+        return value;
+      });
 
-  //test
+      expect(newImg.fileUrl).toEqual("https://localhost:3456/images/test.jpg");
+      expect(newImg.key).toEqual("1234");
+    });
+  });
+  describe("When I am on NewBill Page and I upload file with incorect format", () => {
+    test("Then my input file should be invalid", async () => {
+      document.body.innerHTML = NewBillUI();
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+      const newBill = new NewBill({
+        document,
+        onNavigate,
+        store: mockStore,
+        localStorage: window.localStorage,
+      });
+
+      // Edit Input File
+      const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e));
+      const input = screen.getByTestId("file");
+      const file = new File(["video"], "bill.mp4", { type: "video/mp4" });
+      input.addEventListener("change", handleChangeFile);
+      userEvent.upload(input, file);
+
+      expect(handleChangeFile).toHaveBeenCalled();
+      expect(input.files[0]).toStrictEqual(file);
+      expect(input.files[0].name).not.toMatch(/(\.jpg|\.jpeg|\.png)$/i);
+      expect(input.value).toBe("");
+    });
+  });
 });
 
 /**
@@ -175,7 +170,7 @@ describe("Given I am connected as an employee", () => {
       document.body.innerHTML = `<div id="root"></div>`;
       router();
       window.onNavigate(ROUTES_PATH.NewBill);
-//overide Promise resolve
+      //overide Promise resolve
       mockStore.bills.mockImplementationOnce(() => {
         return {
           update: () => {

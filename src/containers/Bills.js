@@ -34,6 +34,8 @@ export default class {
       .list()
       .then(snapshot => {
         const bills = snapshot
+        //Bug correction date of Bills add .sort
+
         .sort((a, b) => (a.date < b.date) ? 1 : -1)
           .map(doc => {
             console.log(doc)

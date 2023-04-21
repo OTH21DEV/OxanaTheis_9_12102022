@@ -15,22 +15,6 @@ import router from "../app/Router.js";
 jest.mock("../app/store", () => mockStore);
 
 describe("Given I am connected as an employee", () => {
-  // describe("When I am on Bills page but it is loading", () => {
-  //   test("Then, Loading page should be rendered", () => {
-  //      // Set up the document body of BillsUi
-  //     document.body.innerHTML = BillsUI({ loading: true });
-  //     //expect Loading title from LoadingPage.js
-  //     expect(screen.getAllByText("Loading...")).toBeTruthy();
-  //   });
-  // });
-  // describe("When I am on Bills page but back-end send an error message", () => {
-  //   test("Then, Error page should be rendered", () => {
-  //      // Set up the document body of BillsUi
-  //     document.body.innerHTML = BillsUI({ error: "some error message" });
-  //       //expect "error'  from ErrorPage.js
-  //     expect(screen.getAllByText("Erreur")).toBeTruthy();
-  //   });
-  // });
   describe("When I am on Bills Page and I click on bill eye icon", () => {
     test("Then, bill proof image appear", () => {
       // localStorage should be populated with  data
@@ -47,7 +31,6 @@ describe("Given I am connected as an employee", () => {
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });
       };
-   
 
       //creating new Bill
       const billsBoard = new Bills({
@@ -101,166 +84,71 @@ describe("Given I am connected as an employee", () => {
     });
   });
 
+  // test d'intégration GET
+  describe("Given I am connected as an employee", () => {
+    describe("When I am on Bills Page", () => {
+      test("Then, bills should be showed", async () => {
+        Object.defineProperty(window, "localStorage", { value: localStorageMock });
+        window.localStorage.setItem(
+          "user",
+          JSON.stringify({
+            type: "Employee",
+          })
+        );
 
-// test d'intégration GET
-describe("Given I am connected as an employee", () => {
-  describe("When I am on Bills Page", () => {
-    test("Then, bills should be showed", async () => {
-      Object.defineProperty(window, "localStorage", { value: localStorageMock });
-      window.localStorage.setItem(
-        "user",
-        JSON.stringify({
-          type: "Employee",
-        })
-      );
+        document.body.innerHTML = '<div id="root"></div>';
+        router();
+        window.onNavigate(ROUTES_PATH.Bills);
 
-      document.body.innerHTML = '<div id="root"></div>';
-      router();
-      window.onNavigate(ROUTES_PATH.Bills);
-
-      const tableBills = await waitFor(() => screen.getByTestId("tbody"));
-      expect(tableBills).toBeTruthy();
-      expect(tableBills.querySelectorAll("tr")).toHaveLength(4);
-      expect(screen.getAllByText("encore"));
+        const tableBills = await waitFor(() => screen.getByTestId("tbody"));
+        expect(tableBills).toBeTruthy();
+        expect(tableBills.querySelectorAll("tr")).toHaveLength(4);
+        expect(screen.getAllByText("encore"));
+      });
     });
-  });
-  describe("When an error occurs on API", () => {
-    beforeEach(() => {
-      jest.spyOn(mockStore, "bills");
-      Object.defineProperty(window, "localStorage", { value: localStorageMock });
-      window.localStorage.setItem(
-        "user",
-        JSON.stringify({
-          type: "Employee",
-        })
-      );
-      document.body.innerHTML = '<div id="root"></div>';
-      router();
-    });
-    test("fetches bills from an API and fails with 404 message error", async () => {
-      mockStore.bills.mockImplementationOnce(() => {
-        return {
-          list: () => {
-            return Promise.reject(new Error("Erreur 404"));
-          },
-        };
+    describe("When an error occurs on API", () => {
+      beforeEach(() => {
+        jest.spyOn(mockStore, "bills");
+        Object.defineProperty(window, "localStorage", { value: localStorageMock });
+        window.localStorage.setItem(
+          "user",
+          JSON.stringify({
+            type: "Employee",
+          })
+        );
+        document.body.innerHTML = '<div id="root"></div>';
+        router();
+      });
+      test("fetches bills from an API and fails with 404 message error", async () => {
+        mockStore.bills.mockImplementationOnce(() => {
+          return {
+            list: () => {
+              return Promise.reject(new Error("Erreur 404"));
+            },
+          };
+        });
+
+        window.onNavigate(ROUTES_PATH.Bills);
+        await new Promise(process.nextTick);
+        const message = screen.getByText(/Erreur 404/);
+        expect(message).toBeTruthy();
       });
 
-      window.onNavigate(ROUTES_PATH.Bills);
-      await new Promise(process.nextTick);
-      const message = screen.getByText(/Erreur 404/);
-      expect(message).toBeTruthy();
-    });
+      test("fetches messages from an API and fails with 500 message error", async () => {
+        mockStore.bills.mockImplementationOnce(() => {
+          return {
+            list: () => {
+              return Promise.reject(new Error("Erreur 500"));
+            },
+          };
+        });
 
-    test("fetches messages from an API and fails with 500 message error", async () => {
-      mockStore.bills.mockImplementationOnce(() => {
-        return {
-          list: () => {
-            return Promise.reject(new Error("Erreur 500"));
-          },
-        };
+        window.onNavigate(ROUTES_PATH.Bills);
+        await new Promise(process.nextTick);
+        const message = screen.getByText(/Erreur 500/);
+        expect(message).toBeTruthy();
       });
-
-      window.onNavigate(ROUTES_PATH.Bills);
-      await new Promise(process.nextTick);
-      const message = screen.getByText(/Erreur 500/);
-      expect(message).toBeTruthy();
     });
   });
+
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // describe("When I am on Bills and I click on new bills", () => {
-  //   test("Then It should renders NewBill page", () => {
-  //     Object.defineProperty(window, "localStorage", { value: localStorageMock });
-  //     window.localStorage.setItem(
-  //       "user",
-  //       JSON.stringify({
-  //         type: "Employee",
-  //       })
-  //     );
-  //     const onNavigate = (pathname) => {
-  //       document.body.innerHTML = ROUTES({ pathname });
-  //     };
-
-  //     document.body.innerHTML = BillsUI({ data: bills });
-
-  //     const billsBoard = new Bills({
-  //       document,
-  //       onNavigate,
-  //       store: null,
-  //       localStorage: window.localStorage,
-  //     });
-
-  //     const handleClickNewBill = jest.fn(() => billsBoard.handleClickNewBill);
-  //     const button = screen.getByTestId("btn-new-bill");
-  //     button.addEventListener("click", handleClickNewBill);
-  //     userEvent.click(button);
-  //     expect(handleClickNewBill).toHaveBeenCalled();
-  //     expect(screen.getAllByText("Envoyer une note de frais"));
-  //   });
-  // });
-  // describe("When I am on Bills Page and I click on bill eye icon", () => {
-  //   test("Then, bill proof image appear", () => {
-  //     Object.defineProperty(window, "localStorage", { value: localStorageMock });
-  //     window.localStorage.setItem(
-  //       "user",
-  //       JSON.stringify({
-  //         type: "Employee",
-  //       })
-  //     );
-
-  //     document.body.innerHTML = BillsUI({ data: bills });
-  //     window.onNavigate(ROUTES_PATH.Bills);
-
-  //     const billsBoard = new Bills({
-  //       document,
-  //       onNavigate,
-  //       store: null,
-  //       localStorage: localStorageMock,
-  //     });
-
-  //     $.fn.modal = jest.fn();
-  //     const handleClickIconEye = jest.fn(() => {
-  //       billsBoard.handleClickIconEye;
-  //     });
-  //     const eye = screen.getAllByTestId("icon-eye")[0];
-  //     eye.addEventListener("click", handleClickIconEye);
-  //     userEvent.click(eye);
-
-  //     expect(handleClickIconEye).toHaveBeenCalled();
-
-  //     const img = document.querySelector(".bill-proof-container img");
-  //     expect(eye.getAttribute("data-bill-url")).toEqual(img.getAttribute("src"));
-  //   });
-  // });
-});
-
-
